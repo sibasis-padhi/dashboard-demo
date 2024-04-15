@@ -5,6 +5,8 @@ import { fetchAsynUser, getUserList } from "../features/User/UserSlice";
 import { Link } from "react-router-dom";
 import Card from "./UI/Card/Card";
 import EditUserModal from "./Modal/EditUserModal";
+import getAllUsers from "../apis/getAllUsers";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -14,6 +16,19 @@ const Home = () => {
   }, []);
   const users = useSelector(getUserList);
   const [isAddUserShown, setIsAddUserShown] = useState(false);
+
+  const deleteuser = (id) => {
+    getAllUsers
+      .delete(`/removeuser/${id}`)
+      .then((res) => {
+        toast.error(res.data.message);
+        dispatch(fetchAsynUser());
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Container>
       <Card>
@@ -44,19 +59,22 @@ const Home = () => {
                   </Button>{" "} */}
                 </td>
                 <td>
-                  <Button variant="outline-danger">Delete</Button>{" "}
+                  <Button
+                    variant="outline-danger"
+                    onClick={(e) => deleteuser(ur?._id)}
+                  >
+                    Delete
+                  </Button>{" "}
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
       </Card>
-      {/* <UserForms show={isAddUserShown} close={() => setIsAddUserShown(false)} /> */}
       <EditUserModal
         show={isAddUserShown}
         close={() => setIsAddUserShown(false)}
       />
-      {/* <AddUserModal /> */}
       <Link to="/adduser">
         <Button variant="outline-primary">Add User</Button>
       </Link>
