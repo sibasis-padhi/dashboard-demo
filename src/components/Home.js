@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Table } from "react-bootstrap";
+import { Container, Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAsynUser, getUserList } from "../features/User/UserSlice";
+import {
+  fetchAsynUser,
+  getUserList,
+  fetchAsynUserById,
+} from "../features/User/UserSlice";
 import { Link } from "react-router-dom";
 import Card from "./UI/Card/Card";
 import EditUserModal from "./Modal/EditUserModal";
@@ -11,11 +15,16 @@ import { toast } from "react-toastify";
 const Home = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchAsynUser());
+    const interval = setInterval(() => {
+      dispatch(fetchAsynUser());
+    }, 1000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line
     // eslint-disable-next-line
   }, []);
   const users = useSelector(getUserList);
   const [isAddUserShown, setIsAddUserShown] = useState(false);
+  const [selectedUser, setSelectedUser] = useState();
 
   const deleteuser = (id) => {
     getAllUsers
@@ -27,6 +36,11 @@ const Home = () => {
       .catch((err) => {
         console.log(err);
       });
+  };
+  const editUserModal = (id) => {
+    setIsAddUserShown(true);
+    dispatch(fetchAsynUserById(id));
+    setSelectedUser(id);
   };
 
   return (
@@ -51,12 +65,12 @@ const Home = () => {
                 <td>{ur.email}</td>
                 <td>{ur.role}</td>
                 <td>
-                  {/* <Button
+                  <Button
                     variant="outline-primary"
-                    onClick={() => EditUserModal()}
+                    onClick={() => editUserModal(ur?._id)}
                   >
                     Edit
-                  </Button>{" "} */}
+                  </Button>{" "}
                 </td>
                 <td>
                   <Button
@@ -74,6 +88,7 @@ const Home = () => {
       <EditUserModal
         show={isAddUserShown}
         close={() => setIsAddUserShown(false)}
+        selectedUser={selectedUser}
       />
       <Link to="/adduser">
         <Button variant="outline-primary">Add User</Button>
