@@ -7,8 +7,8 @@ export default function Home({ users }) {
   return (
     <Container>
       <Card>
-        <table className="table">
-          <thead className="thead-dark">
+        <Table responsive hover>
+          <thead>
             <tr>
               <th>ID</th>
               <th>Name</th>
@@ -34,7 +34,7 @@ export default function Home({ users }) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </Card>
     </Container>
   );
