@@ -17,7 +17,7 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       dispatch(fetchAsynUser());
-    }, 1000);
+    }, 5000);
     return () => clearInterval(interval);
     // eslint-disable-next-line
     // eslint-disable-next-line
