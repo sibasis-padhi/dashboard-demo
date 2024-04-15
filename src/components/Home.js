@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Table } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAsynUser, getUserList } from "../features/User/UserSlice";
+import { Link } from "react-router-dom";
 import Card from "./UI/Card/Card";
+import EditUserModal from "./Modal/EditUserModal";
 
-export default function Home({ users }) {
+const Home = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchAsynUser());
+    // eslint-disable-next-line
+  }, []);
+  const users = useSelector(getUserList);
+  const [isAddUserShown, setIsAddUserShown] = useState(false);
   return (
     <Container>
       <Card>
@@ -26,7 +36,12 @@ export default function Home({ users }) {
                 <td>{ur.email}</td>
                 <td>{ur.role}</td>
                 <td>
-                  <Button variant="outline-primary">Edit</Button>{" "}
+                  {/* <Button
+                    variant="outline-primary"
+                    onClick={() => EditUserModal()}
+                  >
+                    Edit
+                  </Button>{" "} */}
                 </td>
                 <td>
                   <Button variant="outline-danger">Delete</Button>{" "}
@@ -36,6 +51,16 @@ export default function Home({ users }) {
           </tbody>
         </Table>
       </Card>
+      {/* <UserForms show={isAddUserShown} close={() => setIsAddUserShown(false)} /> */}
+      <EditUserModal
+        show={isAddUserShown}
+        close={() => setIsAddUserShown(false)}
+      />
+      {/* <AddUserModal /> */}
+      <Link to="/adduser">
+        <Button variant="outline-primary">Add User</Button>
+      </Link>
     </Container>
   );
-}
+};
+export default Home;

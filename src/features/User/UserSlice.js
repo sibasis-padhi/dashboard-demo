@@ -12,16 +12,29 @@ export const fetchAsynUser = createAsyncThunk(
   }
 );
 
+export const fetchAsyncUserAdd = createAsyncThunk(
+  "users/fetchAsyncUserAdd",
+  async ({ values }) => {
+    const response = await fetchUser.post("/register", values).catch((err) => {
+      console.log("Err", err);
+    });
+    return response.data?.user;
+  }
+);
 const initialState = {
   users: [],
+  addNewUser: [],
 };
 
 const userSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
-    addUsers: (state, { payload }) => {
+    getUsers: (state, { payload }) => {
       state.users = payload;
+    },
+    addNewUser: (state, { payload }) => {
+      state.addNewUser = payload;
     },
   },
   extraReducers: {
@@ -32,12 +45,15 @@ const userSlice = createSlice({
       //   console.log("Doctor Details Fetched Successfully!");
       return { ...state, users: payload };
     },
+    [fetchAsyncUserAdd.fulfilled]: (state, { payload }) => {
+      return { ...state, appointmentByDate: payload };
+    },
     [fetchAsynUser.rejected]: () => {
       console.log("Rejected!");
     },
   },
 });
 
-export const { addUsers } = userSlice.actions;
+export const { getUsers, addNewUser } = userSlice.actions;
 export const getUserList = (state) => state.users.users;
 export default userSlice.reducer;
